@@ -1,0 +1,362 @@
+basePath: /
+definitions:
+  requestExamples.CreateSubscriptionReqExample:
+    properties:
+      end_date:
+        example: "2023-12-31T00:00:00Z"
+        type: string
+      price:
+        example: 100
+        type: integer
+      service_name:
+        example: Netflix
+        type: string
+      start_date:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 123e4567-e89b-12d3-a456-426655440000
+        type: string
+    type: object
+  requestExamples.DeleteSubscriptionReqExample:
+    properties:
+      subscription_id:
+        example: 1
+        type: integer
+    type: object
+  requestExamples.GetFullPriceByPeriodReqExample:
+    properties:
+      end_date:
+        example: "2023-12-31T00:00:00Z"
+        type: string
+      start_date:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 123e4567-e89b-12d3-a456-426655440000
+        type: string
+    type: object
+  requestExamples.UpdateSubscriptionReqExample:
+    properties:
+      end_date:
+        example: "2023-12-31T00:00:00Z"
+        type: string
+      price:
+        example: 100
+        type: integer
+      service_name:
+        example: Netflix
+        type: string
+      start_date:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      subscription_id:
+        example: 1
+        type: integer
+    type: object
+  responseExamples.EmptySubDateExample:
+    properties:
+      error:
+        example: start_date and end_date are required
+        type: string
+    type: object
+  responseExamples.EmptySubIDExample:
+    properties:
+      error:
+        example: Subscription ID is required
+        type: string
+    type: object
+  responseExamples.GetFullPriceByPeriodExample:
+    properties:
+      count:
+        example: 2
+        type: integer
+      total_cost:
+        example: 1000
+        type: integer
+      user_id:
+        example: 123e4567-e89b-12d3-a456-426655440000
+        type: string
+    type: object
+  responseExamples.GetSudscriptionExample:
+    properties:
+      end_date:
+        example: "2023-12-31T00:00:00Z"
+        type: string
+      price:
+        example: 100
+        type: integer
+      service_name:
+        example: Netflix
+        type: string
+      start_date:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 123e4567-e89b-12d3-a456-426655440000
+        type: string
+    type: object
+  responseExamples.InvalidSubDateExample:
+    properties:
+      error:
+        example: start_date must be before end_date
+        type: string
+    type: object
+  responseExamples.InvalidSubIDExample:
+    properties:
+      error:
+        example: Invalid subscription ID
+        type: string
+    type: object
+  responseExamples.SomeErrorGetingAllSubsExample:
+    properties:
+      error:
+        example: some server errors during getting all subscriptions
+        type: string
+    type: object
+  responseExamples.SomeServerErrorsDuriingCreatingSubExample:
+    properties:
+      error:
+        example: some server errors during creating subscription
+        type: string
+    type: object
+  responseExamples.SomeServerErrorsDuriingDeletingSubExample:
+    properties:
+      error:
+        example: some server errors during deleting subscription
+        type: string
+    type: object
+  responseExamples.SomeServerErrorsDuriingUpdatingSubExample:
+    properties:
+      error:
+        example: some server errors during updating subscription
+        type: string
+    type: object
+  responseExamples.SomeServerErrorsDuringGettingSubExample:
+    properties:
+      error:
+        example: some server errors during getting subscription
+        type: string
+    type: object
+  responseExamples.SubCreatedExample:
+    properties:
+      message:
+        example: Subscription created
+        type: string
+    type: object
+  responseExamples.SubDeletedExample:
+    properties:
+      message:
+        example: Subscription deleted
+        type: string
+    type: object
+  responseExamples.SubNotFoundExample:
+    properties:
+      error:
+        example: Subscription not found
+        type: string
+    type: object
+  responseExamples.SubUpdatedExample:
+    properties:
+      message:
+        example: Subscription updated
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API для управления подписками
+  title: Subscription Service API
+  version: "1.0"
+paths:
+  /createSub:
+    post:
+      consumes:
+      - application/json
+      description: Создает новую подписку. Если не указывать user_id он сгенерируется
+        автоматически.
+      parameters:
+      - description: Данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/requestExamples.CreateSubscriptionReqExample'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Подписка создана
+          schema:
+            $ref: '#/definitions/responseExamples.SubCreatedExample'
+        "400":
+          description: Неверная дата начала и дата окончания подписки
+          schema:
+            $ref: '#/definitions/responseExamples.InvalidSubDateExample'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/responseExamples.SomeServerErrorsDuriingCreatingSubExample'
+      summary: Создать новую подписку
+      tags:
+      - subscriptions
+  /deleteSub:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет подписку по ID
+      parameters:
+      - description: Данные для удаления
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/requestExamples.DeleteSubscriptionReqExample'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Подписка удалена
+          schema:
+            $ref: '#/definitions/responseExamples.SubDeletedExample'
+        "400":
+          description: Пустая дата начала и дата окончания подписки
+          schema:
+            $ref: '#/definitions/responseExamples.EmptySubDateExample'
+        "404":
+          description: Подписка не найдена
+          schema:
+            $ref: '#/definitions/responseExamples.SubNotFoundExample'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/responseExamples.SomeServerErrorsDuriingDeletingSubExample'
+      summary: Удалить подписку
+      tags:
+      - subscriptions
+  /getAllSubs:
+    get:
+      consumes:
+      - application/json
+      description: Получает список всех подписок
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responseExamples.GetSudscriptionExample'
+            type: array
+        "404":
+          description: Подписка не найдена
+          schema:
+            $ref: '#/definitions/responseExamples.SubNotFoundExample'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/responseExamples.SomeErrorGetingAllSubsExample'
+      summary: Получить все подписки
+      tags:
+      - subscriptions
+  /getFullSubPriceByPeriod:
+    post:
+      consumes:
+      - application/json
+      description: Подсчитывает общую стоимость и количество подписок пользователя
+        за указанный период
+      parameters:
+      - description: Параметры периода и пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requestExamples.GetFullPriceByPeriodReqExample'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseExamples.GetFullPriceByPeriodExample'
+        "400":
+          description: Пустая дата начала и дата окончания подписки
+          schema:
+            $ref: '#/definitions/responseExamples.EmptySubDateExample'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/responseExamples.SomeServerErrorsDuringGettingSubExample'
+      summary: Получить суммарную стоимость подписок за период
+      tags:
+      - analytics
+  /getSub/{subscriptionID}:
+    get:
+      consumes:
+      - application/json
+      description: Получает информацию о конкретной подписке
+      parameters:
+      - description: ID подписки
+        in: path
+        name: subscriptionID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responseExamples.GetSudscriptionExample'
+        "400":
+          description: Неверный формат ID подписки
+          schema:
+            $ref: '#/definitions/responseExamples.InvalidSubIDExample'
+        "404":
+          description: Подписка с указанным ID не найдена
+          schema:
+            $ref: '#/definitions/responseExamples.SubNotFoundExample'
+        "500":
+          description: Внутренняя ошибка сервера при получении подписки
+          schema:
+            $ref: '#/definitions/responseExamples.SomeServerErrorsDuringGettingSubExample'
+      summary: Получить подписку по ID
+      tags:
+      - subscriptions
+  /updateSub:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующую подписку
+      parameters:
+      - description: Обновленные данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/requestExamples.UpdateSubscriptionReqExample'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Подписка обновлена
+          schema:
+            $ref: '#/definitions/responseExamples.SubUpdatedExample'
+        "400":
+          description: Пустая дата начала и дата окончания подписки
+          schema:
+            $ref: '#/definitions/responseExamples.EmptySubDateExample'
+        "404":
+          description: Подписка не найдена
+          schema:
+            $ref: '#/definitions/responseExamples.SubNotFoundExample'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/responseExamples.SomeServerErrorsDuriingUpdatingSubExample'
+      summary: Обновить подписку
+      tags:
+      - subscriptions
+schemes:
+- http
+swagger: "2.0"
