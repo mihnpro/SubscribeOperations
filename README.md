@@ -49,7 +49,7 @@
 #### Клонируйте репозиторий
 
 ```bash
-git clone 
+git clone https://github.com/mihnpro/SubscribeOperations.git
 cd subscription-service
 ```
 
