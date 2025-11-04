@@ -17,55 +17,57 @@
   "service_name": "Yandex Plus",
   "price": 400,
   "user_id": "60601fee-2bf1-4721-ae6f-7636e79a0cba",
-  "start_date": ""2023-01-01T00:00:00Z",
+  "start_date": "2023-01-01T00:00:00Z",
   "end_date": "2023-12-31T00:00:00Z"
 }
-
+```
 ### Документация
-- *localhost:8080/swagger/index.html
+- localhost:8080/swagger/index.html
+
 
 ### API Endpoints
 
 #### Подписки (CRUDL)
-- **POST	/createSub	Создать новую подписку
-- **GET	/getSub/{subscriptionID}	Получить подписку по ID
-- **PUT	/updateSub	Обновить подписку
-- **DELETE	/deleteSub	Удалить подписку
-- **GET	/getAllSubs	Получить список всех подписок
+- **POST	/createSub**	Создать новую подписку
+- **GET	/getSub/{subscriptionID}**	Получить подписку по ID
+- **PUT	/updateSub**	Обновить подписку
+- **DELETE	/deleteSub**	Удалить подписку
+- **GET	/getAllSubs**	Получить список всех подписок
 
 #### Аналитика
-POST	/getFullSubPriceByPeriod	Суммарная стоимость подписок за период
+- **POST	/getFullSubPriceByPeriod**	Суммарная стоимость подписок за период
 
+## Быстрый старт
 
-Быстрый старт
+### Предварительные требования
 
-Предварительные требования
+- **Docker**
+- **Docker Compose**
 
-Docker
-Docker Compose
+### Запуск приложения
 
-Запуск приложения
+#### Клонируйте репозиторий
 
-Клонируйте репозиторий
-
-bash
-git clone <repository-url>
+```bash
+git clone 
 cd subscription-service
-Запустите приложение
+```
 
-bash
+#### Запустите приложение
+```bash
 docker-compose up --build
-Приложение будет доступно по адресу:
+```
+#### Приложение будет доступно по адресу:
 
-API: http://localhost:8080
-Swagger UI: http://localhost:8080/swagger/index.html
-PostgreSQL: localhost:5433
+- **API:** http://localhost:8080
+- **Swagger UI:** http://localhost:8080/swagger/index.html
+- **PostgreSQL:** localhost:5433
 
-Переменные окружения
-
+## Переменные окружения
 Создайте файл .env в корне проекта:
 
-env
+
+```.env
 # Database
 DB_HOST=
 DB_PORT=
@@ -82,16 +84,17 @@ POSTGRES_DB=
 
 # App
 PORT=
+```
 
-Технический стек
+## Технический стек
 
-Backend: Go 1.24+
-Database: PostgreSQL 15
-ORM: sqlx
-Migrations: golang-migrate
-API Documentation: Swagger/OpenAPI 3.0
-Containerization: Docker + Docker Compose
-Configuration: .env файлы
+- **Backend:** Go 1.24+
+- **Database:** PostgreSQL 15
+- **ORM:** sqlx
+- **Migrations:** golang-migrate
+- **API Documentation:** Swagger/OpenAPI 3.0
+- **Containerization:** Docker + Docker Compose
+- **Configuration:** .env файлы
 
 
 
