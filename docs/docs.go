@@ -47,9 +47,9 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Неверная дата начала и дата окончания подписки",
+                        "description": "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания",
                         "schema": {
-                            "$ref": "#/definitions/responseExamples.InvalidSubDateExample"
+                            "$ref": "#/definitions/responseExamples.EmptyDateOrInvalidExample"
                         }
                     },
                     "500": {
@@ -90,12 +90,6 @@ const docTemplate = `{
                         "description": "Подписка удалена",
                         "schema": {
                             "$ref": "#/definitions/responseExamples.SubDeletedExample"
-                        }
-                    },
-                    "400": {
-                        "description": "Пустая дата начала и дата окончания подписки",
-                        "schema": {
-                            "$ref": "#/definitions/responseExamples.EmptySubDateExample"
                         }
                     },
                     "404": {
@@ -183,9 +177,15 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Пустая дата начала и дата окончания подписки",
+                        "description": "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания",
                         "schema": {
-                            "$ref": "#/definitions/responseExamples.EmptySubDateExample"
+                            "$ref": "#/definitions/responseExamples.EmptyDateOrInvalidExample"
+                        }
+                    },
+                    "404": {
+                        "description": "Подписка не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/responseExamples.SubNotFoundExample"
                         }
                     },
                     "500": {
@@ -227,13 +227,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Неверный формат ID подписки",
+                        "description": "Не указан ID подписки или ID подписки не является числом",
                         "schema": {
-                            "$ref": "#/definitions/responseExamples.InvalidSubIDExample"
+                            "$ref": "#/definitions/responseExamples.EmptySubOrInvalidIDExample"
                         }
                     },
                     "404": {
-                        "description": "Подписка с указанным ID не найдена",
+                        "description": "Подписка не найдена",
                         "schema": {
                             "$ref": "#/definitions/responseExamples.SubNotFoundExample"
                         }
@@ -279,9 +279,9 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Пустая дата начала и дата окончания подписки",
+                        "description": "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания",
                         "schema": {
-                            "$ref": "#/definitions/responseExamples.EmptySubDateExample"
+                            "$ref": "#/definitions/responseExamples.EmptyDateOrInvalidExample"
                         }
                     },
                     "404": {
@@ -377,21 +377,21 @@ const docTemplate = `{
                 }
             }
         },
-        "responseExamples.EmptySubDateExample": {
+        "responseExamples.EmptyDateOrInvalidExample": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "start_date and end_date are required"
+                    "example": "start_date and end_date are required or start_date must be before end_date"
                 }
             }
         },
-        "responseExamples.EmptySubIDExample": {
+        "responseExamples.EmptySubOrInvalidIDExample": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "Subscription ID is required"
+                    "example": "Subscription ID is required or Invalid subscription ID"
                 }
             }
         },
@@ -434,24 +434,6 @@ const docTemplate = `{
                 "user_id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426655440000"
-                }
-            }
-        },
-        "responseExamples.InvalidSubDateExample": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "start_date must be before end_date"
-                }
-            }
-        },
-        "responseExamples.InvalidSubIDExample": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Invalid subscription ID"
                 }
             }
         },

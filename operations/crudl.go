@@ -10,16 +10,13 @@ import (
 	"test_task/models/response"
 )
 
-
-
-
 // GetAllSubInfo godoc
 // @Summary Получить все подписки
 // @Description Получает список всех подписок
 // @Tags subscriptions
 // @Accept json
 // @Produce json
-// @Success 200 {array} responseExamples.GetSudscriptionExample 
+// @Success 200 {array} responseExamples.GetSudscriptionExample
 // @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка не найдена"
 // @Failure 500 {object} responseExamples.SomeErrorGetingAllSubsExample "Внутренняя ошибка сервера"
 // @Router /getAllSubs [get]
@@ -65,8 +62,7 @@ func GetAllSubsHandler(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param subscription body requestExamples.CreateSubscriptionReqExample true "Данные подписки"
 // @Success 201 {object} responseExamples.SubCreatedExample "Подписка создана"
-// @Failure 400 {object} responseExamples.EmptySubDateExample "Пустая дата начала и дата окончания подписки"
-// @Failure 400 {object} responseExamples.InvalidSubDateExample "Неверная дата начала и дата окончания подписки"
+// @Failure 400 {object} responseExamples.EmptyDateOrInvalidExample "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания"
 // @Failure 500 {object} responseExamples.SomeServerErrorsDuriingCreatingSubExample "Внутренняя ошибка сервера"
 // @Router /createSub [post]
 func CreateSubHandler(w http.ResponseWriter, r *http.Request) {
@@ -113,8 +109,7 @@ func CreateSubHandler(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param subscription body requestExamples.UpdateSubscriptionReqExample true "Обновленные данные подписки"
 // @Success 200 {object} responseExamples.SubUpdatedExample "Подписка обновлена"
-// @Failure 400 {object} responseExamples.InvalidSubDateExample "Неверные данные"
-// @Failure 400 {object} responseExamples.EmptySubDateExample "Пустая дата начала и дата окончания подписки"
+// @Failure 400 {object} responseExamples.EmptyDateOrInvalidExample "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания"
 // @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка не найдена"
 // @Failure 500 {object} responseExamples.SomeServerErrorsDuriingUpdatingSubExample "Внутренняя ошибка сервера"
 // @Router /updateSub [put]
@@ -161,8 +156,6 @@ func UpdateSubHandler(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param subscription body requestExamples.DeleteSubscriptionReqExample true "Данные для удаления"
 // @Success 200 {object} responseExamples.SubDeletedExample "Подписка удалена"
-// @Failure 400 {object} responseExamples.InvalidSubDateExample "Неверные данные"
-// @Failure 400 {object} responseExamples.EmptySubDateExample "Пустая дата начала и дата окончания подписки"
 // @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка не найдена"
 // @Failure 500 {object} responseExamples.SomeServerErrorsDuriingDeletingSubExample "Внутренняя ошибка сервера"
 // @Router /deleteSub [delete]
@@ -178,7 +171,6 @@ func DeleteSubHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := db.DeleteSubOper(subscription, r.Context())
-
 
 	if err != nil {
 		if err.Error() == "no rows deleted" {
@@ -205,9 +197,8 @@ func DeleteSubHandler(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param subscriptionID path string true "ID подписки"
 // @Success 200 {object} responseExamples.GetSudscriptionExample
-// @Failure 400 {object} responseExamples.EmptySubIDExample "Не указан ID подписки"
-// @Failure 400 {object} responseExamples.InvalidSubIDExample "Неверный формат ID подписки"
-// @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка с указанным ID не найдена"
+// @Failure 400 {object} responseExamples.EmptySubOrInvalidIDExample "Не указан ID подписки или ID подписки не является числом"
+// @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка не найдена"
 // @Failure 500 {object} responseExamples.SomeServerErrorsDuringGettingSubExample "Внутренняя ошибка сервера при получении подписки"
 // @Router /getSub/{subscriptionID} [get]
 func GetSubHandler(w http.ResponseWriter, r *http.Request) {
@@ -238,6 +229,13 @@ func GetSubHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if sub == nil {
+		w.WriteHeader(http.StatusNotFound)
+		log.Println("Subscription not found:", subID)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Subscription not found"})
+		return
+	}
+
 	response := response.GetSudscription{
 		ServiceName: sub.ServiceName,
 		Price:       sub.Price,
@@ -260,8 +258,8 @@ func GetSubHandler(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param request body requestExamples.GetFullPriceByPeriodReqExample true "Параметры периода и пользователя"
 // @Success 200 {object} responseExamples.GetFullPriceByPeriodExample
-// @Failure 400 {object} responseExamples.InvalidSubDateExample "Неверные данные"
-// @Failure 400 {object} responseExamples.EmptySubDateExample "Пустая дата начала и дата окончания подписки"
+// @Failure 400 {object} responseExamples.EmptyDateOrInvalidExample "Пустая дата начала и дата окончания подписки или дата начала больше даты окончания"
+// @Failure 404 {object} responseExamples.SubNotFoundExample "Подписка не найдена"
 // @Failure 500 {object} responseExamples.SomeServerErrorsDuringGettingSubExample "Внутренняя ошибка сервера"
 // @Router /getFullSubPriceByPeriod [post]
 func GetFullSubPriceByPeriod(w http.ResponseWriter, r *http.Request) {
@@ -293,6 +291,13 @@ func GetFullSubPriceByPeriod(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Error getting operation by ID:", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	if subInfo == nil {
+		w.WriteHeader(http.StatusNotFound)
+		log.Println("Subscription not found")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Subscription not found"})
 		return
 	}
 
